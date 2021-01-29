@@ -9,7 +9,6 @@ export type TokenData = Pick<IUser, 'id' | 'email' | 'isadmin' | 'companyAdmin' 
 export class TokenService {
 
     constructor() {
-        // TODO. Нужно использовать стрелочные функции (проверить где еще) !!!!!!!! ГОТОВО
         setInterval(() => {
             client.query("DELETE FROM tokens WHERE age(NOW(), logintime) > interval '7' day")
         }, 1000 * 60 * 24)
@@ -46,7 +45,6 @@ export class TokenService {
         await client.query('DELETE FROM tokens WHERE token = $1', [token])
     }
 
-    // TODO. Почитать про статические функции !!!!!! ГОТОВО!
     static initialize() {
         if (!tokenService) {
             tokenService = new TokenService();

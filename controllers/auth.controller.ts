@@ -15,14 +15,10 @@ interface ILoginBody {
 
 export async function login(req: Request, res: Response) {
    const typedReq = req as IRequest<ILoginBody>;
-   // TODO. В самом конце, когда все будет готово, надо изучить и применить валидаторы и санитайзеры данных (экспресс валидатор)
    const { email, password } = typedReq.body;
    try {
-      // TODO. Добавить класс и методы работы с пользователями (например, класс со статическими функциями) чтобы убрать все запросы отсюда.
-      //       По идее в контроллере не должно быть никакой связи с логикой БД, т.к. контроллер может выполнять роуты при различных БД.        !!!!!!!!! ГОТОВО
-      const candidate: IUser | undefined = await UsersDB.findByEmail(email)
+            const candidate: IUser | undefined = await UsersDB.findByEmail(email)
       if (candidate) {
-         // TODO. В БД не должны хранитья пароли в открытом виде                                                                               !!!!!!!!! ГОТОВО
          const candidatePass: IUser | undefined = await UsersDB.findByEmailAndPassword(password, email)
          if (candidatePass) {
             // Генерация токена, пароли совпали
@@ -71,7 +67,6 @@ export async function register(req: Request, res: Response) {
          })
       } else {
          await client.query('BEGIN');
-         // TODO. Один запрос сделать !!!!!!!! ГОТОВО
          try {
             const companyId: string = await CompaniesDB.registerAndReturnCompanyId(companyName, companyInn)
             UsersDB.registerCompanyAdmin(email, password, companyId, surname, name)
@@ -99,7 +94,6 @@ export async function logout(req: Request, res: Response) {
          await tokenService.delete(req.headers.authorization);
          res.sendStatus(200);
       } else {
-         // TODO. Тут точно не 500 !!!! ГОТОВО поправил на 403
          console.log('Токен отсутсвует в запросе');
          res.status(403).json({
             message: 'Ошибка аутентификации'
@@ -123,7 +117,6 @@ export async function registerUser(req: Request, res: Response) {
          })
       } else {
          const typedReq = req as IRequest;
-         // TODO. Зачем эти запросы? пользователь уже аутентифицирован по токену. !!!!!! ГОТОВО
          const companyId: string | undefined = typedReq.user.companyId;
          if (companyId) {
             await UsersDB.registerUser(email, password, companyId, surname, name)
@@ -141,7 +134,7 @@ export async function registerUser(req: Request, res: Response) {
       })
    }
 }
-// TODO:
+
 export async function renameAppAdmin(req: Request, res: Response) {
    const { email, password, surname, name, companyName, companyInn } = req.body;
    try {
