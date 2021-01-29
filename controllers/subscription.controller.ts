@@ -34,6 +34,7 @@ export async function addSubscription(req: Request, res: Response) {
     }
 }
 
+// изменение подписки по id подписки
 export async function changeSubscription(req: Request, res: Response) {
     const { startDate, endDate } = req.body;
     const { id } = req.params;
@@ -103,7 +104,7 @@ export async function deleteSubscription(req: Request, res: Response) {
 }
 
 export async function checkSubscription(req: Request, res: Response) {
-    const { productId } = req.body;
+    const { productId } = req.query as { productId: string };
     const typedReq = req as IRequest;
     const companyId: string | undefined = typedReq.user.companyId;
     if (companyId) {
@@ -114,7 +115,7 @@ export async function checkSubscription(req: Request, res: Response) {
                 if (thisSubscriptionActive) {
                     res.status(200).json({
                         active: true,
-                        activeUntil: endDate
+                        activeUntill: endDate
                      })
                 } else {
                     console.log('Действующая подписка для данного продукта у данной компании не найдена');
@@ -135,5 +136,49 @@ export async function checkSubscription(req: Request, res: Response) {
                 message: 'Ошибка сервера. checkSubscription'
             })
         }
+    }
+}
+
+export async function checkSubscriptionByAdmin(req: Request, res: Response) {
+    const { productId, companyId } = req.query as { productId: string, companyId: string };
+    if (productId && companyId) {
+        try {
+            const endDate: Date | undefined = await SubscriptionDB.checkEndDate(productId, companyId)
+            if (endDate) {
+                const thisSubscriptionActive: ISubscription[] | undefined = await SubscriptionDB.checkActive(productId, companyId)
+                if (thisSubscriptionActive) {
+                    res.status(200).json({
+                        id: thisSubscriptionActive[0].id,
+                        active: true,
+                        activeUntill: endDate
+                     })
+                } else {
+                    const thisSubscriptionUnactive: ISubscription[] | undefined = await SubscriptionDB.checkUnactive(productId, companyId)
+                    if (thisSubscriptionUnactive) {
+                        console.log('Действующая подписка для данного продукта у данной компании не найдена');
+                        res.status(200).json({
+                            id: thisSubscriptionUnactive[0].id,
+                            active: false,
+                            wasActiveUntill: endDate
+                        })
+                    }
+                }
+            } else {
+                console.log('Подписка для данного продукта у данной компании не найдена');
+                res.status(404).json({
+                    message: 'Подписка для данного продукта не найдена'
+                })
+            }
+        } catch (error) {
+            console.error(error.message)
+            res.status(500).json({
+                message: 'Ошибка сервера. checkSubscription'
+            })
+        }
+    } else {
+        console.log('Не верные параметры запроса');
+        res.status(400).json({
+            message: 'Не верные параметры запроса'
+        })
     }
 }

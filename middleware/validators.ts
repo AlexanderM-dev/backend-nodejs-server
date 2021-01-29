@@ -81,7 +81,7 @@ export const subscriptionValidator = [
         .trim()
         .not().isEmpty()
         .withMessage('Start date is required!')
-        .isLength({min: 10, max: 10})
+        .isLength({ min: 10, max: 10 })
         .withMessage('Must be a valid format of Start date!')
         .isDate()
         .withMessage('Must be a Date format (YYYY-MM-DD)'),
@@ -89,7 +89,7 @@ export const subscriptionValidator = [
         .trim()
         .not().isEmpty()
         .withMessage('Start date is required!')
-        .isLength({min: 10, max: 10})
+        .isLength({ min: 10, max: 10 })
         .withMessage('Must be a valid format of End date!')
         .isDate()
         .withMessage('Must be a Date format (YYYY-MM-DD)'),
@@ -97,13 +97,13 @@ export const subscriptionValidator = [
         .trim()
         .not().isEmpty()
         .withMessage('Company Id is required!')
-        .isNumeric({no_symbols: true})
+        .isNumeric({ no_symbols: true })
         .withMessage('Company Id must be numeric'),
     check('productId')
         .trim()
         .not().isEmpty()
         .withMessage('Product Id is required!')
-        .isNumeric({no_symbols: true})
+        .isNumeric({ no_symbols: true })
         .withMessage('Product Id must be numeric')
 ]
 
@@ -112,7 +112,7 @@ export const updSubscriptionValidator = [
         .trim()
         .not().isEmpty()
         .withMessage('Start date is required!')
-        .isLength({min: 10, max: 10})
+        .isLength({ min: 10, max: 10 })
         .withMessage('Must be a valid format of Start date!')
         .isDate()
         .withMessage('Must be a Date format (YYYY-MM-DD)'),
@@ -120,7 +120,7 @@ export const updSubscriptionValidator = [
         .trim()
         .not().isEmpty()
         .withMessage('Start date is required!')
-        .isLength({min: 10, max: 10})
+        .isLength({ min: 10, max: 10 })
         .withMessage('Must be a valid format of End date!')
         .isDate()
         .withMessage('Must be a Date format (YYYY-MM-DD)')
@@ -131,6 +131,21 @@ export const checkSubscriptionValidator = [
         .trim()
         .not().isEmpty()
         .withMessage('Product Id is required!')
-        .isNumeric({no_symbols: true})
+        .isNumeric({ no_symbols: true })
+        .withMessage('Product Id must be numeric')
+]
+
+export const checkSubscriptionValidatorByAdmin = [
+    check('productId')
+        .trim()
+        .not().isEmpty()
+        .withMessage('Product Id is required!')
+        .isNumeric({ no_symbols: true })
+        .withMessage('Product Id must be numeric'),
+    check('companyId')
+        .trim()
+        .not().isEmpty()
+        .withMessage('Product Id is required!')
+        .isNumeric({ no_symbols: true })
         .withMessage('Product Id must be numeric')
 ]

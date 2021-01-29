@@ -47,5 +47,12 @@ export class SubscriptionDB {
             return qr.rows;
         } else return undefined
     }
+
+    static async checkUnactive(productId: string, companyId: string): Promise<ISubscription[] | undefined> {
+        const qr: QueryResult = await client.query('SELECT * FROM subscriptions WHERE product_id = $1 AND company_id = $2 AND end_date < now()::date', [productId, companyId]);
+        if (qr.rows.length) {
+            return qr.rows;
+        } else return undefined
+    }
         
 }
