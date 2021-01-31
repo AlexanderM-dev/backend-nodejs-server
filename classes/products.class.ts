@@ -4,10 +4,18 @@ import { client } from '../index'
 import { IProduct } from '../models/product.model';
 
 export class ProductsDB {
-    constructor() {}
+    constructor() { }
 
     static async getAll(): Promise<IProduct[] | undefined> {
         const qr: QueryResult = await client.query('SELECT * FROM products')
+        if (qr.rows.length) {
+            return qr.rows
+        } else return undefined
+    }
+
+    static async getAllForUser(id: string): Promise<IProduct[] | undefined> {
+        const qr: QueryResult = await client.query(`SELECT products.id, name FROM subscriptions LEFT JOIN products 
+                                    ON subscriptions.product_id  = products.id WHERE subscriptions.company_id = $1`, [id])
         if (qr.rows.length) {
             return qr.rows
         } else return undefined

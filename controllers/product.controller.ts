@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
 import { ProductsDB } from '../classes/products.class'
+import { IRequest } from '../common';
 import { IProduct } from '../models/product.model';
 
 export async function addProduct(req: Request, res: Response) {
@@ -111,5 +112,28 @@ export async function getProductList(req: Request, res: Response) {
         res.status(500).json({
             message: 'Ошибка сервера. getProductList'
         })
+    }
+}
+
+export async function getProductListForUser(req: Request, res: Response) {
+    const typedReq = req as IRequest;
+    const companyId: string | undefined = typedReq.user.companyId;
+    if (companyId) {
+        try {
+            const allUserProducts: IProduct[] | undefined = await ProductsDB.getAllForUser(companyId);
+            if (allUserProducts) {
+                res.status(200).json({ allUserProducts })
+            } else {
+                console.log('Продуктов c подпиской у данной компании в базе данных нет');
+                res.status(404).json({
+                    message: 'Продуктов c подпиской у вашей компании в базе данных нет'
+                });
+            }
+        } catch (error) {
+            console.error(error.message)
+            res.status(500).json({
+                message: 'Ошибка сервера. getProductListForUser'
+            })
+        }
     }
 }

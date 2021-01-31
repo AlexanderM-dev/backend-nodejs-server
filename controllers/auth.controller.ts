@@ -25,6 +25,7 @@ export async function login(req: Request, res: Response) {
             const token: string = await tokenService.create(candidatePass.id)
             res.status(200).json({
                token: token,
+               companyId: candidatePass.companyId,
                companyAdmin: candidatePass.companyAdmin,
                isAdmin: candidatePass.isadmin
             })

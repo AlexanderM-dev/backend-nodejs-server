@@ -114,15 +114,20 @@ export async function checkSubscription(req: Request, res: Response) {
                 const thisSubscriptionActive: ISubscription[] | undefined = await SubscriptionDB.checkActive(productId, companyId)
                 if (thisSubscriptionActive) {
                     res.status(200).json({
+                        id: thisSubscriptionActive[0].id,
                         active: true,
                         activeUntill: endDate
                      })
                 } else {
-                    console.log('Действующая подписка для данного продукта у данной компании не найдена');
-                    res.status(404).json({
-                        active: false,
-                        wasActiveUntill: endDate
-                    })
+                    const thisSubscriptionUnactive: ISubscription[] | undefined = await SubscriptionDB.checkUnactive(productId, companyId)
+                    if (thisSubscriptionUnactive) {
+                        console.log('Действующая подписка для данного продукта у данной компании не найдена');
+                        res.status(200).json({
+                            id: thisSubscriptionUnactive[0].id,
+                            active: false,
+                            wasActiveUntill: endDate
+                        })
+                    }
                 }
             } else {
                 console.log('Подписка для данного продукта у данной компании не найдена');

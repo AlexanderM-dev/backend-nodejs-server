@@ -21,3 +21,31 @@ export async function getCompanyList(req: Request, res: Response) {
         })
     }
 }
+
+export async function getCompanyById(req: Request, res: Response) {
+    const { companyId } = req.params;
+    if (+companyId) {
+        try {
+            const company: ICompany | undefined = await CompaniesDB.findByCompanyId(companyId);
+            if (company) {
+                res.status(200).json(company);
+            } else {
+                console.log('Компании в базе данных нет');
+                res.status(404).json({
+                    message: 'Компания не найдена'
+                });
+            }
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).json({
+                message: 'Ошибка сервера. getCompanyById'
+            })
+        }
+    } else {
+        console.log('В запросе не корректный id компании');
+        res.status(404).json({
+            message: 'Компания не найдена'
+        })
+    }
+
+}

@@ -13,6 +13,13 @@ export class CompaniesDB {
         } else return undefined
     }
 
+    static async findByCompanyId(companyId: string): Promise<ICompany | undefined> {
+        const qr: QueryResult = await client.query('SELECT * FROM companies WHERE id = $1', [companyId]);
+        if (qr.rows.length) {
+            return qr.rows[0];
+        } else return undefined
+    }
+
     static async registerAndReturnCompanyId(companyName: string, companyInn: string): Promise<string> {
         const id: string = (await client.query('INSERT INTO companies(name, inn) VALUES ($1, $2) RETURNING id;', [companyName, companyInn])).rows[0].id;
         return id;
