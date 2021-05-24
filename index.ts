@@ -22,7 +22,7 @@ import { ICurrency } from './models/currencies.model'
 const appVersion: string = packageJSON.version;
 
 dotenv.config();
-// TODO. Содержимое должно заполняться из ENV !!!!!!!!ГОТОВО
+
 export const client = new Client({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
